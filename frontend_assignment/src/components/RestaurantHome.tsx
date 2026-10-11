@@ -53,7 +53,7 @@ export default function RestaurantHome() {
   // load restaurants data
   useEffect(() => {
     if (!token) {
-      navigate("/signup");
+      navigate("/signup", { replace: true });
       return;
     }
 
@@ -84,7 +84,7 @@ export default function RestaurantHome() {
     localStorage.removeItem("fastor_token");
     localStorage.removeItem("fastor_user");
     toast.success("Logout successful!");
-    navigate("/signup");
+    navigate("/signup", { replace: true });
   };
 
 

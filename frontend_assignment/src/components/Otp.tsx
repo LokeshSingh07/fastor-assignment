@@ -14,10 +14,16 @@ export default function Otp() {
   const [timer, setTimer] = useState(30);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const inputs = useRef([]);
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (!phone) navigate("/signup");
+    if (localStorage.getItem("fastor_token")) {
+      navigate("/restaurant", { replace: true });
+      return;
+    }
+    if (!phone) {
+      navigate("/signup", { replace: true });
+    }
   }, [phone, navigate]);
 
   useEffect(() => {
@@ -90,8 +96,8 @@ export default function Otp() {
       localStorage.setItem("fastor_token", token);
       if (data.data) localStorage.setItem("fastor_user", JSON.stringify(data.data));
 
-      toast("Login successful!");
-      navigate("/restaurant", { state: { token } });
+      toast.success("Login successful!");
+      navigate("/restaurant", { state: { token }, replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -116,7 +122,9 @@ export default function Otp() {
             {otp.map((digit, i) => (
               <div key={i} className="flex items-center gap-2">
                 <input
-                  ref={(el) => (inputs.current[i] = el)}
+                  ref={(el) => {
+                    inputs.current[i] = el;
+                  }}
                   type="tel"
                   maxLength={1}
                   value={digit}

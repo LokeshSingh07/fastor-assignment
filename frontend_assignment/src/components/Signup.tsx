@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 
@@ -8,7 +8,13 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    if (localStorage.getItem("fastor_token")) {
+      navigate("/restaurant", { replace: true });
+    }
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (phone.length !== 10) {
@@ -32,8 +38,8 @@ export default function Signup() {
       toast.success("OTP sent successfully!");
 
       navigate("/otp", { state: { phone, dial_code: "+91" } });
-    } catch (err) {
-      setError(err.message);
+    } catch (err: any) {
+      setError(err?.message || "Failed to send OTP");
     } finally {
       setLoading(false);
     }
